@@ -21,6 +21,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { atom, useRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
@@ -122,7 +123,7 @@ function useRecordStatus() {
 
   const saveRecord = (count) => {
     if (count + doneCount > goalCount) count = goalCount - doneCount;
-    if (count == 0) return;
+    if (count === 0) return;
 
     const id = ++todosCountRef.current;
     setTodosCount(id);
@@ -138,7 +139,7 @@ function useRecordStatus() {
   const deleteRecord = (id) => {
     const index = findIndexById(id);
     const count = savedRecords[index]?.count ?? 0;
-    const newRecords = savedRecords.filter((_, _index) => _index != index);
+    const newRecords = savedRecords.filter((_, _index) => _index !== index);
     setSavedRecords(newRecords);
     setDoneCount(doneCount - count);
   };
@@ -147,14 +148,14 @@ function useRecordStatus() {
     const index = findIndexById(id);
     const count = findCountById(id);
     const newRecords = savedRecords.map((el, _index) =>
-      _index == index ? { ...el, count: newCount } : el
+      _index === index ? { ...el, count: newCount } : el
     );
     setSavedRecords(newRecords);
     setDoneCount(doneCount - count + newCount);
   };
 
   const findIndexById = (id) => {
-    return savedRecords.length - id;
+    return Number(savedRecords.length - id);
   };
 
   const findCountById = (id) => {
@@ -291,8 +292,6 @@ function RecordModal({
   useEffect(() => {
     setRecordeCount(initialCount);
   }, [initialCount]);
-  const recordStatus = useRecordStatus();
-  const noticeSnackbarStatus = useNoticeSnackbarStatus();
 
   const increaseCount = (count) => {
     setRecordeCount(recordeCount + count);
@@ -429,7 +428,7 @@ function Drawer({ status }) {
 
   const deleteBtn = () => {
     if (window.confirm(`${status.openedId}회차 기록을 삭제해도 괜찮을까요?`)) {
-      recordStatus.deleteRecord(status.openedId);
+      recordStatus.deleteRecord(Number(status.openedId));
       noticeSnackbarStatus.open(
         `${status.openedId}회차 기록이 삭제되었습니다.`
       );
@@ -543,7 +542,7 @@ function MainPage() {
 function HistoryPage() {
   const recordStatus = useRecordStatus();
   const drawerStatus = useDrawerStatus();
-  const navigate = Navigate();
+  const navigate = useNavigate();
 
   const [sortIndex, setSortIndex] = useRecoilState(TodoList__sortIndexAtom);
 
@@ -667,7 +666,7 @@ function App() {
           </NavLink>
           <div className="flex-grow"></div>
           <div className="self-stretch flex items-center">
-            {location.pathname != "/history" && (
+            {location.pathname !== "/history" && (
               <NavLink
                 className="select-none select-none self-stretch flex items-center"
                 to="/history"
@@ -675,7 +674,7 @@ function App() {
                 히스토리
               </NavLink>
             )}
-            {location.pathname == "/history" && (
+            {location.pathname === "/history" && (
               <NavLink
                 className="select-none select-none self-stretch flex items-center"
                 to="/main"
