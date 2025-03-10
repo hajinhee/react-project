@@ -1,6 +1,20 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import App from "./App";
+import { useEffect } from "react";
+
+const muiThemePaletteKeys = [
+  "background",
+  "common",
+  "error",
+  "grey",
+  "info",
+  "primary",
+  "secondary",
+  "success",
+  "text",
+  "warning",
+];
 
 function Root() {
   // Create a theme instance.
@@ -25,20 +39,20 @@ function Root() {
     },
   });
 
-  // useEffect(() => {
-  //   const r = document.querySelector(":root");
+  useEffect(() => {
+    const r = document.querySelector(":root");
 
-  //   muiThemePaletteKeys.forEach((paletteKey) => {
-  //     const themeColorObj = theme.palette[paletteKey];
+    muiThemePaletteKeys.forEach((paletteKey) => {
+      const themeColorObj = theme.palette[paletteKey];
 
-  //     for (const key in themeColorObj) {
-  //       if (Object.hasOwnProperty.call(themeColorObj, key)) {
-  //         const colorVal = themeColorObj[key];
-  //         r.style.setProperty(`--mui-color-${paletteKey}-${key}`, colorVal);
-  //       }
-  //     }
-  //   });
-  // }, []);
+      for (const key in themeColorObj) {
+        if (Object.hasOwnProperty.call(themeColorObj, key)) {
+          const colorVal = themeColorObj[key];
+          r.style.setProperty(`--mui-color-${paletteKey}-${key}`, colorVal);
+        }
+      }
+    });
+  }, [theme.palette]);
 
   return (
     <>
